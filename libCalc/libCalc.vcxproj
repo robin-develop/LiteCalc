@@ -147,7 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="eval.h" />
+    <ClInclude Include="callee.h" />
+    <ClInclude Include="state.h" />
+    <ClInclude Include="exp.h" />
+    <ClInclude Include="node.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="state.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
