@@ -1,0 +1,88 @@
+%include
+{
+#define YYCOVERAGE 1
+}
+
+
+%token_prefix TOK_
+
+%token_type {token *}
+%token_destructor{delete $$;}
+
+%extra_argument {result* s}
+
+%parse_accept { /* do nothing*/}
+
+%syntax_error 
+{
+	std::pair<token, std::list<int>> suggestion{*yyminor, {}};
+	for (int i = 0; i < YYNTOKEN; ++i)
+	{
+		int a = yy_find_shift_action(i, yypParser->yytos->stateno);
+		
+		if (a !=YY_ERROR_ACTION)
+		{
+			//std::string str = yyTokenName[i];
+			suggestion.second.push_back(i);
+		}
+	}
+	s->suggestions.push_back(suggestion);
+}
+
+%parse_failure
+{
+	s->errors.push_back(L"Parse failed"); 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+%left PLUS MINUS.
+%left TIMES DIVIDE MOD POW.
+%left IDENTITY.
+%right UMINUS.
+
+start ::= expr(A). {
+	s->node=A;
+}
+
+
+//////////////////////////////////////////////////////////
+%type expr {exp *}
+%destructor expr { delete $$; }
+
+expr(A) ::= expr(B) PLUS expr(C). {
+	A = new add(B, C);
+}
+
+expr(A) ::= expr(B) MINUS expr(C). {
+	A = new sub(B, C);
+}
+
+expr(A) ::= expr(B) TIMES expr(C). {
+	A = new mul(B, C);
+}
+
+expr(A) ::= expr(B) DIVIDE expr(C). {
+	A = new div(B, C);
+}
+
+
+expr(A) ::= MINUS expr(B). [UMINUS]{
+	A = new negative(B);
+}
+
+expr(A) ::= LPAR expr(B) RPAR. {
+	A = B;
+}
+
+expr(A) ::= number(B). {
+	A = B;
+}
+
+//////////////////////////////////////////////////////////
+%type number {exp *}
+%destructor number { delete $$; }
+
+number(A) ::= NUMBER(B).{
+	A = new number(B->num);
+	delete B;
+}

@@ -148,12 +148,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="callee.h" />
+    <ClInclude Include="compiler.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="node.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="compiler.cpp" />
     <ClCompile Include="state.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="lex.re2c">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">re2c -c -w lex.re2c -o lex.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lex.cpp</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="parser.lemon">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lemon -c  parser.lemon</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parser.c</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

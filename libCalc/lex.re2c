@@ -1,0 +1,89 @@
+/*!types:re2c*/
+
+int scan(scanner& s)
+{
+	for(;;)
+	{
+		if (s.cur >= s.end) {s.start++;return TOK_END;}
+		s.start = s.cur;
+		s.marker = nullptr;
+		int c = yycINITIAL;
+		/*!re2c
+		re2c:define:YYCURSOR = s.cur;
+		re2c:define:YYMARKER = s.marker;
+
+		re2c:define:YYCTYPE = wchar_t;
+		re2c:yyfill:enable = 0;
+		re2c:define:YYGETCONDITION = "c";
+		re2c:define:YYGETCONDITION:naked = 1;
+		re2c:define:YYSETCONDITION = "c = @@;";
+		re2c:define:YYSETCONDITION:naked = 1;
+		re2c:flags:u = 0;
+		re2c:flags:8 = 0;
+		re2c:flags:w = 1;
+
+		// ignore whitespace
+		ws = [ \t]+;
+		<INITIAL> ws   { continue; }
+		// Ignore return
+		nl = "\r\n" | "\n";
+		<INITIAL> nl   { s.line++; s.begin = s.cur; continue; }
+
+		// comments
+		<INITIAL> "/*" :=> comments
+
+		// single line comment
+		<INITIAL> "//" :=> comment
+
+		
+		
+		// structural characters
+		<INITIAL> "+" { return TOK_PLUS; }
+		<INITIAL> "-" { return TOK_MINUS; }
+		<INITIAL> "*" { return TOK_TIMES; }
+		<INITIAL> "/" { return TOK_DIVIDE; }
+		<INITIAL> "^" { return TOK_POW; }
+		<INITIAL> "(" { return TOK_LPAR; }
+		<INITIAL> ")" { return TOK_RPAR; }
+
+		// number
+		decimal_point   = ".";
+		digit           = [0-9];
+		digit_1_9       = [1-9];
+		e               = "e" | "E";
+		minus           = "-";
+		plus            = "+";
+		zero            = "0";
+		exp             = e (minus | plus)? digit+;
+		frac            = decimal_point digit+;
+		int             = (zero | digit_1_9 digit*);
+		invalid_int     = minus? "0" digit+;
+		
+		<INITIAL> invalid_int     { return TOK_ERROR; }
+		number_unsigned = int;
+		<INITIAL> number_unsigned { return TOK_NUMBER; }
+		number_integer  = int;
+		<INITIAL> number_integer  { return TOK_NUMBER; }
+		number_float    = int frac? exp?;
+		<INITIAL> number_float    { return TOK_NUMBER; }
+	
+		alpha = [a-z] | [A-Z];
+		identity = alpha+ (alpha* | digit* | "_"*)*;
+		<INITIAL> identity { return TOK_IDENTITY; }
+
+		// end
+		<*> "\x00"         { s.start++;return TOK_END; }
+
+		// anything else is an error
+		<*> *              {  return TOK_ERROR; }
+
+		<comment>  nl			{ s.line++; s.begin = s.cur; continue; }
+		<comment>  *			{ goto yyc_comment; }
+
+		<comments> "*/"         { continue; }
+		<comments>   nl			{ s.line++; s.begin = s.cur; goto yyc_comments; }
+		<comments>   *			{ goto yyc_comments; }
+		*/
+	}
+}
+

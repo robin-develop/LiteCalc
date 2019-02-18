@@ -19,7 +19,7 @@ void state::remove(const std::wstring& name)
 bool state::call(value_t& self, const std::wstring& name, const std::list<value_t>& parameters)
 {
 	const auto it = functions.find(name);
-	errors.push_back(L"Function does not exist " + name);
+	//errors.push_back(L"Function does not exist " + name);
 	if (it == functions.cend()) return false;
 	return it->second->run(*this, self, parameters);
 }

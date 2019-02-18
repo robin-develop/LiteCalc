@@ -11,6 +11,8 @@ struct exp
 	virtual bool run(state& state, value_t& value) const = 0;
 };
 
+
+
 struct unary : exp
 {
 	std::shared_ptr<exp> n;
@@ -45,9 +47,44 @@ struct binary : exp
 	virtual bool run(state& state, value_t l, value_t r, value_t& value) const = 0;
 };
 
-struct additive final: binary
+
+struct caller final : exp
 {
-	additive(exp* l, exp* r) : binary(l, r){}
+	std::wstring name;
+	caller(std::wstring name):name(std::move(name)){}
+	bool run(state& state, value_t& value) const override
+	{
+		// TODO:
+		return false;
+	}
+};
+
+struct number final : exp
+{
+	value_t value;
+	explicit number(value_t v) : value(v) {}
+
+	bool run(state& state, value_t& value) const override
+	{
+		value = this->value;
+		return true;
+	}
+};
+
+struct negative final : unary
+{
+	explicit negative(exp* n) : unary(n) {}
+
+	bool run(state& state, value_t before, value_t& after) const override
+	{
+		after = -before;
+		return true;
+	}
+};
+
+struct add final: binary
+{
+	add(exp* l, exp* r) : binary(l, r){}
 
 	bool run(state& state, value_t l, value_t r, value_t& value) const override
 	{
@@ -56,9 +93,9 @@ struct additive final: binary
 	}
 };
 
-struct subtraction : binary
+struct sub : binary
 {
-	subtraction(exp* l, exp* r) : binary(l, r) {}
+	sub(exp* l, exp* r) : binary(l, r) {}
 
 	bool run(state& state, value_t l, value_t r, value_t& value) const override
 	{
@@ -67,9 +104,9 @@ struct subtraction : binary
 	}
 };
 
-struct multiplicative : binary
+struct mul : binary
 {
-	multiplicative(exp* l, exp* r) : binary(l, r) {}
+	mul(exp* l, exp* r) : binary(l, r) {}
 
 	bool run(state& state, value_t l, value_t r, value_t& value) const override
 	{
@@ -78,9 +115,9 @@ struct multiplicative : binary
 	}
 };
 
-struct division : binary
+struct div : binary
 {
-	division(exp* l, exp* r) : binary(l, r) {}
+	div(exp* l, exp* r) : binary(l, r) {}
 
 	bool run(state& state, value_t l, value_t r, value_t& value) const override
 	{
@@ -89,4 +126,6 @@ struct division : binary
 		return true;
 	}
 };
+
+
 }
