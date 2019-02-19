@@ -12,6 +12,18 @@ struct callee;
 
 using value_t = long double;
 
+inline std::wstring to_string(const value_t& v)
+{
+	auto str = std::to_wstring(v);
+	auto it = str.crbegin();
+	size_t size = 0;
+	while(it!= str.crend() && *it == L'0') ++it;
+	if( *it==L'.') ++it;
+	str.erase(str.size() - (it - str.crbegin()));
+	if (str.empty()) return L"0";
+	return str;
+}
+
 class eval_exception : std::exception
 {
 public:
@@ -37,6 +49,10 @@ struct state
 {
 	// variables
 	std::map<std::wstring, value_t> variables;
+	const value_t& operator[](const std::wstring& name) const;
+	void put(const std::wstring& name, value_t v);
+	void erase(const std::wstring& name);
+	void clear();
 	
 	// extern functions
 	std::map<std::wstring, std::shared_ptr<callee>> functions;

@@ -151,7 +151,6 @@ struct mod : binary
 
 };
 
-
 struct variable : exp
 {
 	std::wstring name;
@@ -160,9 +159,7 @@ struct variable : exp
 
 	value_t run(state& state) const override
 	{
-		const auto it = state.variables.find(name);
-		if (it == state.variables.cend()) throw calc::eval_exception(L"Variable doesn't exist" + name);
-		return it->second;
+		return state[name];
 	}
 
 };

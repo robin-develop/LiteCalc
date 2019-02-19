@@ -4,6 +4,29 @@
 namespace calc
 {
 
+const value_t& state::operator[](const std::wstring& name) const
+{
+	const auto it = variables.find(name);
+	if (it == variables.cend()) throw eval_exception(L"Variable doesn't exist " + name);
+	return it->second;
+}
+
+void state::put(const std::wstring& name, value_t v)
+{
+	variables[name] = v;
+}
+
+void state::erase(const std::wstring& name)
+{
+	variables.erase(name);
+}
+
+void state::clear()
+{
+	variables.clear();
+}
+
+
 bool state::add(callee* function)
 {
 	using pair_t = std::pair<std::wstring, std::shared_ptr<callee>>;

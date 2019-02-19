@@ -23,7 +23,7 @@ struct exp final: stmt
 	explicit exp(calc::exp::exp* exp):expr(exp){}
 	std::wstring run(state& state) const override
 	{
-		return std::to_wstring(expr->run(state));
+		return to_string(expr->run(state));
 	}
 };
 
@@ -34,8 +34,8 @@ struct assign final : stmt
 	assign(std::wstring name, calc::exp::exp* expr):name(std::move(name)), expr(expr){}
 	std::wstring run(state& state) const override
 	{
-		state.variables[name] = expr->run(state);
-		return {};
+		state.put(name, expr->run(state));
+		return to_string(state.variables[name]);
 	}
 };
 }
