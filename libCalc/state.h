@@ -35,6 +35,9 @@ private:
 
 struct state
 {
+	// variables
+	std::map<std::wstring, value_t> variables;
+	
 	// extern functions
 	std::map<std::wstring, std::shared_ptr<callee>> functions;
 	bool add(callee* function);

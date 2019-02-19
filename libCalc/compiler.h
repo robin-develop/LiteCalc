@@ -1,6 +1,5 @@
 #pragma once
-#include "exp.h"
-
+#include "stmt.h"
 
 #include <string>
 #include <list>
@@ -20,7 +19,7 @@ struct token
 
 struct result
 {
-	exp::exp* node;
+	stmt::stmt* node;
 	std::list<std::wstring> errors;
 	std::list<std::pair<token, std::list<int>>> suggestions;
 };

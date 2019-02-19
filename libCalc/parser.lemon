@@ -41,9 +41,19 @@
 %right UMINUS.
 %left IDENTITY.
 
-
-start ::= expr(A). {
+start ::= state(A). {
 	s->node=A;
+}
+
+//////////////////////////////////////////////////////////
+%type state {stmt::stmt *}
+%destructor state { delete $$; }
+state(A) ::= IDENTITY(B) ASSIGN expr(C).{
+	A = new stmt::assign(B->str, C);
+	delete B;
+}
+state(A) ::= expr(B).{
+	A = new stmt::exp(B);
 }
 
 //////////////////////////////////////////////////////////
@@ -110,6 +120,10 @@ expr(A) ::= LPAR expr(B) RPAR. {
 	A = B;
 }
 
+expr(A) ::= variable(B). {
+	A = B;
+}
+
 expr(A) ::= number(B). {
 	A = B;
 }
@@ -120,5 +134,13 @@ expr(A) ::= number(B). {
 
 number(A) ::= NUMBER(B).{
 	A = new exp::number(B->num);
+	delete B;
+}
+
+//////////////////////////////////////////////////////////
+%type variable {exp::exp *}
+%destructor variable { delete $$; }
+variable(A) ::= IDENTITY(B).{
+	A = new exp::variable(B->str);
 	delete B;
 }

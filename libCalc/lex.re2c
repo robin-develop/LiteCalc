@@ -46,6 +46,7 @@ int scan(scanner& s)
 		<INITIAL> ")" { return TOK_RPAR; }
 		<INITIAL> "." { return TOK_DOT; }
 		<INITIAL> "," { return TOK_COMMA; }
+		<INITIAL> "=" { return TOK_ASSIGN; }
 
 		// number
 		decimal_point   = ".";
