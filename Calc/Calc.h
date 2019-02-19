@@ -1,10 +1,32 @@
 #pragma once
 
+
 using namespace System;
 
-namespace Calc {
-	public ref class Class1
+
+#include "../libCalc/stmt.h"
+#include "../libCalc/compiler.h"
+
+#include <msclr/marshal.h>
+
+namespace Calc
+{
+public ref class Calc
+{
+public:
+	Calc():_compiler(new calc::compiler), _state(new calc::state){}
+	~Calc() { delete _compiler; delete _state; }
+
+	String^ Eval(String^ code)
 	{
-		// TODO: Add your methods for this class here.
-	};
+		const auto str = msclr::interop::marshal_as<std::wstring>(code);
+		auto result = _compiler->compile(str);
+		return gcnew  String("");
+	}
+
+private:
+	calc::compiler* _compiler;
+	calc::state* _state;
+};
+
 }
