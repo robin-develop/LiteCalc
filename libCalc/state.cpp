@@ -1,5 +1,4 @@
 #include "state.h"
-
 #include "callee.h"
 
 namespace calc
@@ -16,11 +15,10 @@ void state::remove(const std::wstring& name)
 	functions.erase(name);
 }
 
-bool state::call(value_t& self, const std::wstring& name, const std::list<value_t>& parameters)
+value_t state::call(const value_t& self, const std::wstring& name, const std::list<value_t>& parameters)
 {
 	const auto it = functions.find(name);
-	//errors.push_back(L"Function does not exist " + name);
-	if (it == functions.cend()) return false;
+	if (it == functions.cend()) throw eval_exception(L"Function does not exist " + name);
 	return it->second->run(*this, self, parameters);
 }
 

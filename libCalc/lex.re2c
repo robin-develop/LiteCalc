@@ -42,9 +42,10 @@ int scan(scanner& s)
 		<INITIAL> "-" { return TOK_MINUS; }
 		<INITIAL> "*" { return TOK_TIMES; }
 		<INITIAL> "/" { return TOK_DIVIDE; }
-		<INITIAL> "^" { return TOK_POW; }
 		<INITIAL> "(" { return TOK_LPAR; }
 		<INITIAL> ")" { return TOK_RPAR; }
+		<INITIAL> "." { return TOK_DOT; }
+		<INITIAL> "," { return TOK_COMMA; }
 
 		// number
 		decimal_point   = ".";

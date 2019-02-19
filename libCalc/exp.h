@@ -1,131 +1,155 @@
 #pragma once
 
-#include "node.h"
+#include "state.h"
+
+#include <string>
+#include <functional>
+#include <cmath>
+
 
 namespace calc
 {
 
+namespace exp
+{
 struct exp
 {
 	virtual ~exp() = default;
-	virtual bool run(state& state, value_t& value) const = 0;
+	virtual value_t run(state& state) const = 0;
 };
 
+struct number final : exp
+{
+	value_t value;
 
+	explicit number(value_t v) : value(v)
+	{
+	}
+
+	value_t run(state& state) const override
+	{
+		return value;
+	}
+};
+
+struct parameters final
+{
+	explicit parameters(exp *e)
+	{
+		push_back(e);
+	}
+
+	parameters& push_back(exp* e)
+	{
+		params.push_back(std::shared_ptr<exp>(e));
+		return *this;
+	}
+
+	std::list<std::shared_ptr<exp>> params;
+};
+
+struct caller final : exp
+{
+	std::shared_ptr<exp> self;
+	std::wstring name;
+	std::shared_ptr<parameters> params;
+	caller(exp *self, std::wstring name, parameters* p) : self(self), name(std::move(name)), params(p)
+	{
+	}
+
+	value_t run(state& state) const override
+	{
+		std::list<value_t> pv;
+		if(params != nullptr)
+		{
+			for(const auto& n : params->params)
+			{
+				pv.push_back(n->run(state));
+			}
+		}
+		return state.call(self->run(state), name, pv);
+	}
+};
 
 struct unary : exp
 {
 	std::shared_ptr<exp> n;
 
-	explicit unary(exp* n) : n(n) {}
-	~unary() override = default;
-
-	bool run(state& state, value_t& value) const override
+	explicit unary(exp* n) : n(n)
 	{
-		if (!n->run(state, value)) return false;
-		return run(state, value, value);
 	}
 
-	virtual bool run(state& state, value_t before, value_t& after) const = 0;
+	~unary() override = default;
+
+	value_t run(state& state) const override
+	{
+		return run(state, n->run(state));
+	}
+
+	virtual value_t run(state&, value_t) const = 0;
+};
+
+struct negative final : unary
+{
+	explicit negative(exp* n) : unary(n)
+	{
+	}
+
+	value_t run(state& state, value_t value) const override
+	{
+		return -value;
+	}
 };
 
 struct binary : exp
 {
 	std::shared_ptr<exp> left, right;
 
-	binary(exp * l, exp * r) : left(l), right(r){}
+	binary(exp* l, exp* r) : left(l), right(r)
+	{
+	}
+
 	~binary() override = default;
 
-	bool run(state& state, value_t& value) const override
+	value_t run(state& state) const override
 	{
-		value_t l{};
-		if (!left->run(state, l)) return false;
-		if (!right->run(state, value)) return false;
-		return run(state, l, value, value);
+		return run(state, left->run(state), right->run(state));
 	}
 
-	virtual bool run(state& state, value_t l, value_t r, value_t& value) const = 0;
+	virtual value_t run(state& state, value_t l, value_t r) const = 0;
 };
 
-
-struct caller final : exp
+template <typename FunT>
+struct basic_binary_operator : binary
 {
-	std::wstring name;
-	caller(std::wstring name):name(std::move(name)){}
-	bool run(state& state, value_t& value) const override
+	using fun_t = FunT;
+	fun_t fun;
+
+	basic_binary_operator(exp* l, exp* r) : binary(l, r)
 	{
-		// TODO:
-		return false;
+	}
+
+	value_t run(state& state, value_t l, value_t r) const override
+	{
+		return fun(l, r);
 	}
 };
 
-struct number final : exp
+using add = basic_binary_operator<std::plus<>>;
+using sub = basic_binary_operator<std::minus<>>;
+using mul = basic_binary_operator<std::multiplies<>>;
+using div = basic_binary_operator<std::divides<>>;
+
+struct mod : binary
 {
-	value_t value;
-	explicit number(value_t v) : value(v) {}
+	mod(exp* l, exp* r) : binary(l, r) {}
 
-	bool run(state& state, value_t& value) const override
+	value_t run(state& state, value_t l, value_t r) const override
 	{
-		value = this->value;
-		return true;
+		return std::fmod(l, r);
 	}
+
 };
 
-struct negative final : unary
-{
-	explicit negative(exp* n) : unary(n) {}
-
-	bool run(state& state, value_t before, value_t& after) const override
-	{
-		after = -before;
-		return true;
-	}
-};
-
-struct add final: binary
-{
-	add(exp* l, exp* r) : binary(l, r){}
-
-	bool run(state& state, value_t l, value_t r, value_t& value) const override
-	{
-		value = l + r;
-		return true;
-	}
-};
-
-struct sub : binary
-{
-	sub(exp* l, exp* r) : binary(l, r) {}
-
-	bool run(state& state, value_t l, value_t r, value_t& value) const override
-	{
-		value = l - r;
-		return true;
-	}
-};
-
-struct mul : binary
-{
-	mul(exp* l, exp* r) : binary(l, r) {}
-
-	bool run(state& state, value_t l, value_t r, value_t& value) const override
-	{
-		value = l * r;
-		return true;
-	}
-};
-
-struct div : binary
-{
-	div(exp* l, exp* r) : binary(l, r) {}
-
-	bool run(state& state, value_t l, value_t r, value_t& value) const override
-	{
-		// TODO: Need to check the r value that it does not equal to zero
-		value = l / r;
-		return true;
-	}
-};
-
-
+}
 }

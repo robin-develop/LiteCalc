@@ -37,37 +37,73 @@
 ///////////////////////////////////////////////////////////////////////////////
 %left PLUS MINUS.
 %left TIMES DIVIDE MOD POW.
-%left IDENTITY.
+%left DOT.
 %right UMINUS.
+%left IDENTITY.
+
 
 start ::= expr(A). {
 	s->node=A;
 }
 
+//////////////////////////////////////////////////////////
+%type call {exp::exp *}
+%destructor call { delete $$; }
+
+call(A) ::= expr(B) DOT IDENTITY(C).{
+	A = new exp::caller(B, C->str, nullptr);
+	delete C;
+}
+call(A) ::= expr(B) DOT IDENTITY(C) LPAR RPAR.{
+	A = new exp::caller(B, C->str, nullptr);
+	delete C;
+}
+call(A) ::= expr(B) DOT IDENTITY(C) LPAR params(D) RPAR.{
+	A = new exp::caller(B, C->str, D);
+	delete C;
+}
+
+%type params {exp::parameters *}
+%destructor params { delete $$; }
+params(A) ::= expr(B).{
+	A = new exp::parameters(B);
+}
+params(A) ::= params(B) COMMA expr(C).{
+	A = B;
+	A->push_back(C);
+}
+
 
 //////////////////////////////////////////////////////////
-%type expr {exp *}
+%type expr {exp::exp *}
 %destructor expr { delete $$; }
 
 expr(A) ::= expr(B) PLUS expr(C). {
-	A = new add(B, C);
+	A = new exp::add(B, C);
 }
 
 expr(A) ::= expr(B) MINUS expr(C). {
-	A = new sub(B, C);
+	A = new exp::sub(B, C);
 }
 
 expr(A) ::= expr(B) TIMES expr(C). {
-	A = new mul(B, C);
+	A = new exp::mul(B, C);
 }
 
 expr(A) ::= expr(B) DIVIDE expr(C). {
-	A = new div(B, C);
+	A = new exp::div(B, C);
 }
 
+expr(A) ::= expr(B) MOD expr(C). {
+	A = new exp::mod(B, C);
+}
+
+expr(A) ::= call(B). {
+	A = B;
+}
 
 expr(A) ::= MINUS expr(B). [UMINUS]{
-	A = new negative(B);
+	A = new exp::negative(B);
 }
 
 expr(A) ::= LPAR expr(B) RPAR. {
@@ -79,10 +115,10 @@ expr(A) ::= number(B). {
 }
 
 //////////////////////////////////////////////////////////
-%type number {exp *}
+%type number {exp::exp *}
 %destructor number { delete $$; }
 
 number(A) ::= NUMBER(B).{
-	A = new number(B->num);
+	A = new exp::number(B->num);
 	delete B;
 }

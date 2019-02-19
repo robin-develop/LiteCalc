@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="callee.h" />
     <ClInclude Include="compiler.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="exp.h" />
     <ClInclude Include="node.h" />

@@ -96,11 +96,11 @@ result compiler::compile(const std::wstring& str) const
 		}
 
 		Parse(_parser, code, token, &state);
+
 		if (!state.errors.empty() || code == TOK_END)
 		{
 			process_suggestions(state, code, scanner);
-			if (code != TOK_END)
-				Parse(_parser, TOK_END, token, &state);
+			if (code != TOK_END) Parse(_parser, TOK_END, token, &state);
 			break;
 		}
 	}

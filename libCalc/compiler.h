@@ -20,7 +20,7 @@ struct token
 
 struct result
 {
-	exp* node;
+	exp::exp* node;
 	std::list<std::wstring> errors;
 	std::list<std::pair<token, std::list<int>>> suggestions;
 };
