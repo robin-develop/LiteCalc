@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="C#" extensions=".cs" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+  <Color name="Syntax" foreground="GreenYellow"  exampleText="()," />
+  <Color name="Operation" foreground="Orange" fontWeight="bold" exampleText="+ - * /;" />
+  <Color name="MethodCall" foreground="DeepSkyBlue"  exampleText="o.ToString();"/>
+  <Color name="NumberLiteral" foreground="AliceBlue" fontWeight="bold" exampleText="3.1415f"/>
+  <Color name="SyntaxError" foreground="DeepPink" fontWeight="bold" exampleText="3.1415f"/>
+  <!-- This is the main ruleset. -->
+  <RuleSet>
+
+    <Keywords color="Operation">
+      <Word>+</Word>
+      <Word>-</Word>
+      <Word>*</Word>
+      <Word>/</Word>
+      <Word>%</Word>
+    </Keywords>
+
+    <Keywords color="Syntax">
+      <Word>(</Word>
+      <Word>)</Word>
+      <Word>,</Word>
+    </Keywords>
+
+    <!-- Digits -->
+    <Rule color="NumberLiteral">
+      0[xX][0-9a-fA-F]+  # hex number
+      |
+      (	\d+(\.[0-9]+)?   #number with optional floating point
+      |	\.[0-9]+           #or just starting with floating point
+      )
+      ([eE][+-]?[0-9]+)? # optional exponent
+    </Rule>
+
+    <!-- Mark previous rule-->
+    <Rule color="MethodCall">
+      <!--\b-->
+      [^\d\W]+[\d\w_]* # an identifier
+      <!--(?=\s*\() # followed by (-->
+    </Rule>
+
+    <Rule color="SyntaxError">
+      <!--\b-->
+      [^\s()]+  # an identifier
+      <!--(?=\s*\() # followed by (-->
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>

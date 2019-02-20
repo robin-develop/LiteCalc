@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 #include <map>
+#include <optional>
 
 namespace calc
 {
@@ -47,6 +48,10 @@ private:
 
 struct state
 {
+	// units
+	std::map<std::wstring, value_t> units;
+	value_t unit(value_t value, const std::wstring& name);
+
 	// variables
 	std::map<std::wstring, value_t> variables;
 	const value_t& operator[](const std::wstring& name) const;

@@ -20,8 +20,12 @@ public:
 	String^ Eval(String^ code)
 	{
 		const auto str = msclr::interop::marshal_as<std::wstring>(code);
-		auto result = _compiler->compile(str);
-		return gcnew  String("");
+		const auto result = _compiler->compile(str);
+		if(result.node != nullptr)
+		{
+			
+		}
+		return gcnew String("");
 	}
 
 private:

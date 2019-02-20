@@ -7,6 +7,18 @@
 #include <iostream>
 #include <string>
 
+inline std::wostream& operator<<(std::wostream& os, calc::value_t v)
+{
+	os << calc::to_string(v);
+	return os;
+}
+
+inline std::wostream& operator<<(std::wostream& os, std::optional<calc::value_t> v)
+{
+	if (v.has_value())
+		os << calc::to_string(v.value());
+	return os;
+}
 
 int main()
 {
@@ -29,7 +41,7 @@ int main()
 		{
 			try 
 			{
-				if (result.node == nullptr) continue;;
+				if (result.node == nullptr) continue;
 				std::wcout << result.node->run(state) << std::endl;
 			}
 			catch(calc::eval_exception& e)

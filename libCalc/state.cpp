@@ -3,6 +3,12 @@
 
 namespace calc
 {
+value_t state::unit(value_t value, const std::wstring& name)
+{
+	const auto it = units.find(name);
+	if(it == units.cend()) throw eval_exception(L"Unit doesn't exist " + name);
+	return value * it->second;
+}
 
 const value_t& state::operator[](const std::wstring& name) const
 {

@@ -32,6 +32,21 @@ struct number final : exp
 	}
 };
 
+struct unit : exp
+{
+	value_t value;
+	std::wstring name;
+	unit(const value_t v, std::wstring un):value(v), name(std::move(un))
+	{
+		
+	}
+
+	value_t run(state& state) const override
+	{
+		return state.unit(value, name);
+	}
+};
+
 struct parameters final
 {
 	explicit parameters(exp *e)

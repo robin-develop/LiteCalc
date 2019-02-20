@@ -120,6 +120,12 @@ expr(A) ::= LPAR expr(B) RPAR. {
 	A = B;
 }
 
+expr(A) ::= NUMBER(B) IDENTITY(C).{
+	A = new exp::unit(B->num, C->str);
+	delete B;
+	delete C;
+}
+
 expr(A) ::= variable(B). {
 	A = B;
 }
@@ -144,3 +150,4 @@ variable(A) ::= IDENTITY(B).{
 	A = new exp::variable(B->str);
 	delete B;
 }
+
