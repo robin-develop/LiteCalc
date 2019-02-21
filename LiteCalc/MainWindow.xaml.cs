@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,7 +15,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 using Calc;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 
 namespace LiteCalc
@@ -33,6 +37,17 @@ namespace LiteCalc
             Variables = new ObservableCollection<Memory>(_calc.Variables);
             this.DataContext = this;
             TextInput.Focus();
+
+            var myAssembly = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("LiteCalc.highlight.xshd"))
+            {
+                using (var reader = new XmlTextReader(s))
+                {
+                    TextInput.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+
+                    TextInput.SyntaxHighlighting = TextInput.SyntaxHighlighting;
+                }
+            }
         }
 
         private void Refresh()

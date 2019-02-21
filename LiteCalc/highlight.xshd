@@ -3,8 +3,9 @@
 
   <Color name="Syntax" foreground="GreenYellow"  exampleText="()," />
   <Color name="Operation" foreground="Orange" fontWeight="bold" exampleText="+ - * /;" />
-  <Color name="MethodCall" foreground="DeepSkyBlue"  exampleText="o.ToString();"/>
-  <Color name="NumberLiteral" foreground="AliceBlue" fontWeight="bold" exampleText="3.1415f"/>
+  <Color name="MethodCall" foreground="Yellow"  exampleText="o.ToString();"/>
+  <Color name="Variable" foreground="SteelBlue"  exampleText="o.ToString();"/>
+  <Color name="NumberLiteral" foreground="AliceBlue" exampleText="3.1415f"/>
   <Color name="SyntaxError" foreground="DeepPink" fontWeight="bold" exampleText="3.1415f"/>
   <!-- This is the main ruleset. -->
   <RuleSet>
@@ -14,7 +15,7 @@
       <Word>-</Word>
       <Word>*</Word>
       <Word>/</Word>
-      <Word>%</Word>
+      <Word>=</Word>
     </Keywords>
 
     <Keywords color="Syntax">
@@ -33,12 +34,16 @@
       ([eE][+-]?[0-9]+)? # optional exponent
     </Rule>
 
-    <!-- Mark previous rule-->
+    <!-- Method Call-->
     <Rule color="MethodCall">
-      <!--\b-->
-      [^\d\W]+[\d\w_]* # an identifier
-      <!--(?=\s*\() # followed by (-->
+      \.{1}[^\d\W]+[\d\w_]* # an identifier
     </Rule>
+
+    <!-- Variable-->
+    <Rule color="Variable">
+        [^\d\W]+[\d\w_]* # an identifier
+    </Rule>
+
 
     <Rule color="SyntaxError">
       <!--\b-->
