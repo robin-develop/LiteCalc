@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LiteCalc"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Class="LiteCalc.MainWindow"
         mc:Ignorable="d"
-        Title="LiteCalc - Stone Studio" Height="450" Width="800" Background="#FF202020">
+        Title="LiteCalc - Stone Studio" Height="450" Width="800" Background="#FF202020" FontFamily="Consolas" FontSize="16">
     <!--Window.Resources>
         <Style x:Key="GridViewColumnHeaderStyle1" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Template">
@@ -36,20 +36,40 @@
         </Grid.RowDefinitions>
         <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="SteelBlue" Margin="0, 0, 0, 5">
 
-            <avalonedit:TextEditor HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#222" Foreground="#CCC"/>
+            <avalonedit:TextEditor x:Name="TextInput" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="#222" Foreground="#CCC" TextChanged="TextEditor_TextChanged"/>
 
         </Border>
         <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Background="#222"/>
         <Border Grid.Column="0" Grid.Row="1" BorderThickness="1"  BorderBrush="SteelBlue" >
-            <avalonedit:TextEditor VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="#222" Foreground="#CCC"/>
+            <avalonedit:TextEditor x:Name="TextResult" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="#222" Foreground="#CCC"/>
         </Border>
         <Border Grid.Column="2" Grid.Row="1"  BorderThickness="1"  BorderBrush="SteelBlue">
-            <ListView BorderThickness="0" Background="#222">
+            <ListView x:Name="ListviewMemory" BorderThickness="0" Background="#222" ItemsSource="{Binding Variables}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        >
+                                        <TextBlock Foreground="AliceBlue">
+                                        <GridViewRowPresenter HorizontalAlignment="Stretch" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="Auto" Margin="0"  Content="{TemplateBinding Content}"/>
+                                        </TextBlock>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" Width="auto"/>
-                        <GridViewColumn Header="Value" Width="auto"/>
+                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Value" Width="auto" DisplayMemberBinding="{Binding Value}"/>
                     </GridView>
+    
+
                 </ListView.View>
             </ListView>
 

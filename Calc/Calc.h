@@ -1,31 +1,41 @@
 #pragma once
 
-
-using namespace System;
-
-
 #include "../libCalc/stmt.h"
 #include "../libCalc/compiler.h"
-
-#include <msclr/marshal.h>
-
+#include <msclr/marshal_cppstd.h>
 namespace Calc
 {
+public ref class Memory
+{
+public:
+	property System::String^ Name;
+	property calc::value_t^ Value;
+};
+
 public ref class Calc
 {
 public:
-	Calc():_compiler(new calc::compiler), _state(new calc::state){}
-	~Calc() { delete _compiler; delete _state; }
+	Calc();
+	~Calc();
+	!Calc();
+	
+	calc::value_t^ Calc::Eval(System::String^ code);
 
-	String^ Eval(String^ code)
+	property System::Collections::Generic::List<Memory^>^ Variables
 	{
-		const auto str = msclr::interop::marshal_as<std::wstring>(code);
-		const auto result = _compiler->compile(str);
-		if(result.node != nullptr)
+		System::Collections::Generic::List<Memory^>^ get()
 		{
-			
+			auto list = gcnew System::Collections::Generic::List<Memory^>;
+	
+			for(auto &n : _state->variables)
+			{
+				auto memory = gcnew Memory;
+				memory->Name = gcnew System::String(n.first.c_str());
+				memory->Value = n.second;
+				list->Add(memory);
+			}
+			return list;
 		}
-		return gcnew String("");
 	}
 
 private:
