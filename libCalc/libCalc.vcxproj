@@ -168,11 +168,23 @@
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">re2c -c -w lex.re2c -o lex.cpp</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lex.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">re2c -c -w lex.re2c -o lex.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lex.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">re2c -c -w lex.re2c -o lex.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lex.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">re2c -c -w lex.re2c -o lex.cpp</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lex.cpp</Outputs>
     </CustomBuild>
     <CustomBuild Include="parser.lemon">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lemon -c  parser.lemon</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parser.c</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> parser.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lemon -c  parser.lemon</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> parser.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">lemon -c  parser.lemon</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> parser.cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">lemon -c  parser.lemon</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> parser.cpp</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
