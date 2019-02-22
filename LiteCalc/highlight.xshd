@@ -2,11 +2,11 @@
 <SyntaxDefinition name="C#" extensions=".cs" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
   <Color name="Syntax" foreground="GreenYellow"  exampleText="()," />
-  <Color name="Operation" foreground="Orange" fontWeight="bold" exampleText="+ - * /;" />
+  <Color name="Operation" foreground="Orange"  exampleText="+ - * /;" />
   <Color name="MethodCall" foreground="Yellow"  exampleText="o.ToString();"/>
-  <Color name="Variable" foreground="SteelBlue"  exampleText="o.ToString();"/>
+  <Color name="Variable" foreground="LightGreen"  exampleText="o.ToString();"/>
   <Color name="NumberLiteral" foreground="AliceBlue" exampleText="3.1415f"/>
-  <Color name="SyntaxError" foreground="DeepPink" fontWeight="bold" exampleText="3.1415f"/>
+  <Color name="SyntaxError" foreground="DeepPink"  exampleText="3.1415f"/>
   <!-- This is the main ruleset. -->
   <RuleSet>
 

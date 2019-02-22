@@ -31,7 +31,7 @@ compiler::~compiler()
 
 token* create_token(const int code, const scanner& scanner)
 {
-	auto token = new calc::token{ code, scanner.line, scanner.start - scanner.begin + 1, scanner.cur - scanner.start, {}, {} };
+	auto token = new calc::token{ code, scanner.line, int(scanner.start - scanner.begin + 1), int(scanner.cur - scanner.start), {}, {} };
 	switch (code)
 	{
 	case TOK_NUMBER:

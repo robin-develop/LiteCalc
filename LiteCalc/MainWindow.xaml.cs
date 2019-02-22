@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,6 +22,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 
+
 namespace LiteCalc
 {
     /// <summary>
@@ -28,26 +30,30 @@ namespace LiteCalc
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Calc.Calc _calc = new Calc.Calc();
+        private Calc.Calc _calc;
         public ObservableCollection<Memory> Variables { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            Variables = new ObservableCollection<Memory>(_calc.Variables);
-            this.DataContext = this;
-            TextInput.Focus();
 
-            var myAssembly = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            _calc = new Calc.Calc();
+
+            Variables = new ObservableCollection<Memory>(_calc.Variables);
+
+            this.DataContext = this;
+            
             using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("LiteCalc.highlight.xshd"))
             {
-                using (var reader = new XmlTextReader(s))
+                using (var reader = new XmlTextReader(s ?? throw new InvalidOperationException()))
                 {
                     TextInput.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
 
                     TextInput.SyntaxHighlighting = TextInput.SyntaxHighlighting;
                 }
             }
+
+            TextInput.Focus();
         }
 
         private void Refresh()
@@ -66,16 +72,25 @@ namespace LiteCalc
                 TextResult.Text = "";
                 return;
             }
-            var result = _calc.Eval(TextInput.Text);
 
-            Refresh();
-
-            if (result == null)
+            try
             {
-                TextResult.Text = "";
-                return;
+                var result = _calc.Eval(TextInput.Text);
+                Refresh();
+
+                if (result == null)
+                {
+                    TextResult.Text = "";
+                    return;
+                }
+                TextResult.Text = result.ToString();
             }
-            TextResult.Text = result.ToString();
+            catch(Calc.EvalException ee)
+            {
+                TextResult.Text = ee.Message;
+            }
+
+
         }
 
     }

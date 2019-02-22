@@ -12,6 +12,17 @@ public:
 	property calc::value_t^ Value;
 };
 
+public ref class EvalException : System::Exception
+{
+public:
+	EvalException(){}
+	explicit EvalException(const std::wstring& str)
+	{
+		Message = gcnew System::String(str.c_str());
+	}
+	System::String^ Message;
+};
+
 public ref class Calc
 {
 public:

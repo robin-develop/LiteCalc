@@ -24,6 +24,8 @@ calc::value_t^ Calc::Eval(System::String^ code)
 {
 	const auto str = msclr::interop::marshal_as<std::wstring>(code);
 	const auto result = _compiler->compile(str);
+	if (!result.errors.empty())
+		throw gcnew EvalException(result.errors.crbegin()->c_str());
 	if (result.node != nullptr)
 	{
 		try
@@ -33,10 +35,9 @@ calc::value_t^ Calc::Eval(System::String^ code)
 		}
 		catch(calc::eval_exception e)
 		{
-			
+			throw gcnew EvalException(e.error());
 		}
 	}
-
 	return nullptr;
 }
 }

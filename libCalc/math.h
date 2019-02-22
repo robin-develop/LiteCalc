@@ -24,7 +24,7 @@ struct sqrt : calc::callee
 	calc::value_t run(calc::state& state, const calc::value_t& self,
 		const std::list<calc::value_t>& parameters) const override
 	{
-		if (!parameters.empty()) throw calc::eval_exception(L"parameter count of pow is 0");
+		if (!parameters.empty()) throw calc::eval_exception(L"parameter count of sqrt is 0");
 		return std::sqrt(self);
 	}
 };
