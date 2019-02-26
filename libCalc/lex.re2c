@@ -69,7 +69,7 @@ int scan(scanner& s)
 		number_float    = int frac? exp?;
 		<INITIAL> number_float    { return TOK_NUMBER; }
 	
-		alpha = [a-z] | [A-Z];
+		alpha = [^\u0000-\u0040 \u005B-\u0060 \u007B-\u00BF \u00D7 \u00F7 \u02B0-\u036F \u1AB0-\u1AFF \u1D00-\u1DFF \u2000-\u2BFF \u2E00-\u2E7F \u3000-\u303F \uD800-\uDFFF \uE000-\uF8FF \uFE00-\uFFFF];
 		identity = alpha+ (alpha* | digit* | "_"*)*;
 		<INITIAL> identity { return TOK_IDENTITY; }
 
